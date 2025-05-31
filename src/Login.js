@@ -3,7 +3,7 @@ import './Login.css';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    email: '',
+    username: '',
     password: ''
   });
   const [isLoaded, setIsLoaded] = useState(false);
@@ -54,14 +54,14 @@ const Login = () => {
           
           <form onSubmit={handleSubmit} className="login-form">
             <div className="input-group slide-in-down" style={{ animationDelay: '0.3s', textAlign:'left' }}>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="username">Username</label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={credentials.email}
+                type="text"
+                id="username"
+                name="username"
+                value={credentials.username}
                 onChange={handleChange}
-                placeholder="Masukkan email Anda"
+                placeholder="Masukkan username Anda"
                 required
                 className="input-animated"
               />
