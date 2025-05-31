@@ -3,10 +3,12 @@ import './Login.css';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    email: '',
+    username: '',
     password: ''
   });
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -20,18 +22,43 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Implementasi logika login akan ditambahkan di sini
-    console.log('Login attempt:', credentials);
+    setError(null);
+    setIsLoading(true);
     
     // Animasi tombol saat submit
     const button = e.target.querySelector('.login-button');
     button.classList.add('button-loading');
     
-    setTimeout(() => {
+    try {
+      const response = await fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Simpan token dan data user ke localStorage
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        
+        // Redirect ke halaman dashboard atau home
+        window.location.href = '/dashboard';
+      } else {
+        setError(data.message || 'Login gagal. Silakan coba lagi.');
+      }
+    } catch (err) {
+      setError('Terjadi kesalahan. Silakan coba lagi nanti.');
+      console.error('Login error:', err);
+    } finally {
+      setIsLoading(false);
       button.classList.remove('button-loading');
-    }, 1500);
+    }
   };
 
   return (
@@ -52,16 +79,22 @@ const Login = () => {
             <p className="subtitle slide-in-down" style={{ animationDelay: '0.1s' }}>Selamat datang kembali. Silakan masukkan detail Anda untuk login</p>
           </div>
           
+          {error && (
+            <div className="error-message slide-in-down" style={{ marginBottom: '1rem', color: '#e53e3e', textAlign: 'center' }}>
+              {error}
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="login-form">
             <div className="input-group slide-in-down" style={{ animationDelay: '0.3s', textAlign:'left' }}>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="username">Username</label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={credentials.email}
+                type="text"
+                id="username"
+                name="username"
+                value={credentials.username}
                 onChange={handleChange}
-                placeholder="Masukkan email Anda"
+                placeholder="Masukkan username Anda"
                 required
                 className="input-animated"
               />
@@ -91,7 +124,7 @@ const Login = () => {
               <a href="#" className="forgot-password">Lupa Kata Sandi?</a>
             </div>
             
-            <button type="submit" className="login-button slide-in-down" style={{ animationDelay: '0.6s' }}>
+            <button type="submit" className="login-button slide-in-down" style={{ animationDelay: '0.6s' }} disabled={isLoading}>
               <span className="button-text">Masuk</span>
               <span className="button-loader"></span>
             </button>
