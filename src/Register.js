@@ -6,6 +6,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     username: '',
     nama_user: '',
+    email: '',
     password: '',
     confirmPassword: ''
   });
@@ -59,6 +60,7 @@ const Register = () => {
         body: JSON.stringify({
           username: formData.username,
           nama_user: formData.nama_user,
+          email: formData.email,
           password: formData.password
         })
       });
@@ -142,6 +144,20 @@ const Register = () => {
                 value={formData.nama_user}
                 onChange={handleChange}
                 placeholder="Masukkan nama lengkap Anda"
+                required
+                className="input-animated"
+              />
+            </div>
+            
+            <div className="input-group slide-in-down" style={{ animationDelay: '0.45s', textAlign:'left' }}>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Masukkan email Anda"
                 required
                 className="input-animated"
               />
