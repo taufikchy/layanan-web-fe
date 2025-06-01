@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -9,6 +10,7 @@ const Login = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -42,13 +44,17 @@ const Login = () => {
       
       const data = await response.json();
       
-      if (data.success) {
-        // Simpan token dan data user ke localStorage
-        localStorage.setItem('token', data.data.token);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
+      if (response.ok) {
+        // Tampilkan pesan sukses
+        setLoginSuccess(true);
         
-        // Redirect ke halaman dashboard atau home
-        window.location.href = '/dashboard';
+        // Simpan data user ke localStorage
+        localStorage.setItem('user_data', JSON.stringify(data));
+        
+        // Redirect ke halaman dashboard setelah 1 detik
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1000);
       } else {
         setError(data.message || 'Login gagal. Silakan coba lagi.');
       }
@@ -82,6 +88,12 @@ const Login = () => {
           {error && (
             <div className="error-message slide-in-down" style={{ marginBottom: '1rem', color: '#e53e3e', textAlign: 'center' }}>
               {error}
+            </div>
+          )}
+          
+          {loginSuccess && (
+            <div className="success-message slide-in-down" style={{ marginBottom: '1rem', color: '#38a169', textAlign: 'center' }}>
+              Login berhasil! Anda akan dialihkan ke dashboard...
             </div>
           )}
           
@@ -130,7 +142,7 @@ const Login = () => {
             </button>
             
             <div className="register-link slide-in-down" style={{ animationDelay: '0.7s' }}>
-              <p>Belum memiliki akun? <a href="#">Daftar</a></p>
+              <p>Belum memiliki akun? <Link to="/register">Daftar</Link></p>
             </div>
           </form>
         </div>
