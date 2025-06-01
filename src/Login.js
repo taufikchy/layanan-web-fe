@@ -133,7 +133,7 @@ const Login = () => {
                 <input type="checkbox" id="remember" className="custom-checkbox" />
                 <label htmlFor="remember">Ingat password ini</label>
               </div>
-              <a href="#" className="forgot-password">Lupa Kata Sandi?</a>
+              <button className="forgot-password" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>Lupa Kata Sandi?</button>
             </div>
             
             <button type="submit" className="login-button slide-in-down" style={{ animationDelay: '0.6s' }} disabled={isLoading}>
