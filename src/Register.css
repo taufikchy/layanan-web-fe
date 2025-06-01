@@ -1,3 +1,6 @@
+/* Register.css */
+/* Menggunakan gaya dasar yang sama dengan Login.css dengan beberapa penyesuaian */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -56,7 +59,7 @@ body, html {
   animation: slideInDown 0.5s ease-out forwards;
 }
 
-.login-container {
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,7 +71,7 @@ body, html {
   opacity: 0;
 }
 
-.login-card {
+.register-card {
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -79,7 +82,7 @@ body, html {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.login-card:hover {
+.register-card:hover {
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
   transform: translateY(-5px);
 }
@@ -101,11 +104,11 @@ body, html {
   transform: scale(1.1);
 }
 
-.login-content {
+.register-content {
   padding: 1.8rem;
 }
 
-.login-header {
+.register-header {
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -126,7 +129,7 @@ body, html {
   transform: scale(1.05);
 }
 
-.login-header h2 {
+.register-header h2 {
   color: #1e293b;
   font-size: 1.5rem;
   font-weight: 700;
@@ -139,11 +142,7 @@ body, html {
   margin-bottom: 0.5rem;
 }
 
-.login-info {
-  display: none;
-}
-
-.login-form {
+.register-form {
   margin-top: 1rem;
 }
 
@@ -193,85 +192,27 @@ body, html {
   opacity: 0.7;
 }
 
+.input-error {
+  border-color: #e53e3e;
+}
+
+.input-error:focus {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.1);
+}
+
+.password-mismatch {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  animation: slideInDown 0.3s ease-out forwards;
+}
+
 .password-input-container {
   position: relative;
 }
 
-.remember-forgot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.85rem;
-}
-
-.remember-me {
-  display: flex;
-  align-items: center;
-}
-
-.custom-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #cbd5e1;
-  border-radius: 4px;
-  margin-right: 0.5rem;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: #f8fafc;
-}
-
-.custom-checkbox:checked {
-  background-color: #2563eb;
-  border-color: #2563eb;
-}
-
-.custom-checkbox:checked::after {
-  content: "✓";
-  position: absolute;
-  color: white;
-  font-size: 12px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.custom-checkbox:hover {
-  border-color: #94a3b8;
-}
-
-.remember-me label {
-  color: #475569;
-  cursor: pointer;
-}
-
-.forgot-password {
-  color: #2563eb;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.forgot-password:after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -2px;
-  left: 0;
-  background-color: #2563eb;
-  transition: width 0.3s ease;
-}
-
-.forgot-password:hover:after {
-  width: 100%;
-}
-
-.login-button {
+.register-button {
   width: 100%;
   padding: 0.85rem;
   background-color: #2563eb;
@@ -287,15 +228,22 @@ body, html {
   overflow: hidden;
 }
 
-.login-button:hover {
+.register-button:hover {
   background-color: #1d4ed8;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25);
 }
 
-.login-button:active {
+.register-button:active {
   transform: translateY(0);
   box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+}
+
+.register-button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .button-loading .button-text {
@@ -325,13 +273,13 @@ body, html {
   transition: visibility 0s, opacity 0.2s linear;
 }
 
-.register-link {
+.login-link {
   text-align: center;
   font-size: 0.9rem;
   color: #475569;
 }
 
-.register-link a {
+.login-link a {
   color: #2563eb;
   font-weight: 500;
   text-decoration: none;
@@ -339,7 +287,7 @@ body, html {
   position: relative;
 }
 
-.register-link a:after {
+.login-link a:after {
   content: '';
   position: absolute;
   width: 0;
@@ -350,17 +298,17 @@ body, html {
   transition: width 0.3s ease;
 }
 
-.register-link a:hover:after {
+.login-link a:hover:after {
   width: 100%;
 }
 
 /* Responsif untuk berbagai ukuran layar */
 @media (max-width: 480px) {
-  .login-content {
+  .register-content {
     padding: 2rem 1.5rem;
   }
   
-  .login-header h2 {
+  .register-header h2 {
     font-size: 1.5rem;
   }
   
@@ -376,37 +324,31 @@ body, html {
     padding: 0.85rem 0.9rem;
   }
   
-  .login-button {
+  .register-button {
     padding: 0.85rem;
   }
 }
 
 @media (max-width: 360px) {
-  .login-content {
+  .register-content {
     padding: 1.75rem 1.25rem;
-  }
-  
-  .remember-forgot {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
   }
   
   .main-logo {
     max-width: 160px;
   }
   
-  .login-header h2 {
+  .register-header h2 {
     font-size: 1.3rem;
   }
 }
 
 @media (min-width: 768px) {
-  .login-card {
+  .register-card {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   }
   
-  .login-button:hover {
+  .register-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
   }
@@ -414,25 +356,21 @@ body, html {
 
 /* Dukungan untuk mode gelap */
 @media (prefers-color-scheme: dark) {
-  .login-container {
+  .register-container {
     background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   }
   
-  .login-card {
+  .register-card {
     background: #1e293b;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }
   
-  .login-header h2 {
+  .register-header h2 {
     color: #f1f5f9;
   }
   
   .subtitle {
     color: #cbd5e1;
-  }
-  
-  .login-info {
-    color: #94a3b8;
   }
   
   .input-group label {
@@ -454,16 +392,20 @@ body, html {
     color: #94a3b8;
   }
   
-  .custom-checkbox {
-    background-color: #334155;
-    border-color: #475569;
+  .input-error {
+    border-color: #f87171;
   }
   
-  .remember-me label {
-    color: #e2e8f0;
+  .input-error:focus {
+    border-color: #f87171;
+    box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.1);
   }
   
-  .register-link {
+  .password-mismatch {
+    color: #f87171;
+  }
+  
+  .login-link {
     color: #cbd5e1;
   }
 }
