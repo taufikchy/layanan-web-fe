@@ -48,8 +48,9 @@ const Login = () => {
         // Tampilkan pesan sukses
         setLoginSuccess(true);
         
-        // Simpan data user ke localStorage
-        localStorage.setItem('user_data', JSON.stringify(data));
+        // Simpan token dan data user ke localStorage
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('userData', JSON.stringify(data.data.user));
         
         // Redirect ke halaman dashboard setelah 1 detik
         setTimeout(() => {
