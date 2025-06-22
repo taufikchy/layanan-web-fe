@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
+import './Navigation.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -46,11 +47,15 @@ const Dashboard = () => {
     },
     ringkasan_inventaris: {
       kuantitas_tersedia: 0,
-      lokasi_barang: 0
+      lokasi_barang: 0,
+      total_nilai: 0,
+      stok_rendah: 0
     },
     ringkasan_produk: {
       jumlah_tersedia: 0,
-      jumlah_kategori: 0
+      jumlah_kategori: 0,
+      total_produk: 0,
+      jumlah_supplier: 0
     },
     ringkasan_pesanan: {
       data: {
@@ -67,8 +72,11 @@ const Dashboard = () => {
     stok_terlaris: [],
     stok_menipis: []
   });
+  const [stokRendah, setStokRendah] = useState([]);
+  const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -111,7 +119,37 @@ const Dashboard = () => {
       }
     };
 
+    // Fetch stok rendah data
+    const fetchStokRendah = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:3001/api/barang/stok-rendah', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          }
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          setStokRendah(result.data || []);
+          if (result.data && result.data.length > 0) {
+            setShowNotification(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching stok rendah:', error);
+      }
+    };
+
     fetchDashboardData();
+    fetchStokRendah();
+    
+    // Set interval untuk check stok rendah setiap 5 menit
+    const interval = setInterval(fetchStokRendah, 300000);
+    
+    return () => clearInterval(interval);
   }, [navigate]);
 
   const handleLogout = () => {
@@ -127,48 +165,126 @@ const Dashboard = () => {
 
   return (
     <div className={`dashboard-container ${isLoaded ? 'fade-in' : ''}`}>
-      {/* Sidebar */}
-      <div className="dashboard-sidebar">
-        <div className="sidebar-header">
-          <img src="/logo_tasur.png" alt="Tasur Inventory" className="sidebar-logo" />
-        </div>
-        <nav className="sidebar-nav">
-          <Link to="/dashboard" className="nav-item active">
-            <i className="nav-icon home-icon"></i>
-            <span>Beranda</span>
-          </Link>
-          <Link to="/penjualan" className="nav-item">
-            <i className="nav-icon sales-icon"></i>
-            <span>Penjualan</span>
-          </Link>
-          <Link to="/laporan" className="nav-item">
-            <i className="nav-icon report-icon"></i>
-            <span>Laporan</span>
-          </Link>
-          <Link to="/pemasok" className="nav-item">
-            <i className="nav-icon supplier-icon"></i>
-            <span>Pemasok</span>
-          </Link>
-          <Link to="/pesanan" className="nav-item">
-            <i className="nav-icon order-icon"></i>
-            <span>Pesanan</span>
-          </Link>
-          <Link to="/kelola-toko" className="nav-item">
-            <i className="nav-icon store-icon"></i>
-            <span>Kelola Toko</span>
-          </Link>
-          <Link to="/pengaturan" className="nav-item">
-            <i className="nav-icon settings-icon"></i>
-            <span>Pengaturan</span>
-          </Link>
-        </nav>
-        <div className="sidebar-footer">
-          <button onClick={handleLogout} className="nav-item logout">
-            <i className="nav-icon logout-icon"></i>
-            <span>Keluar</span>
+      {/* Mobile Menu Button */}
+      <button 
+        className={`mobile-menu-btn ${isOpen ? 'active' : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {/* Navigation Sidebar */}
+      <nav className={`navigation ${isOpen ? 'open' : ''}`}>
+        <div className="nav-header">
+          <h2>Inventory System</h2>
+          <button 
+            className="nav-close"
+            onClick={() => setIsOpen(false)}
+          >
+            ×
           </button>
         </div>
-      </div>
+
+        <div className="nav-menu">
+          <Link
+            to="/dashboard"
+            className="nav-item active"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">📊</span>
+            <span className="nav-text">Dashboard</span>
+          </Link>
+          <Link
+            to="/barang"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">📦</span>
+            <span className="nav-text">Data Barang</span>
+          </Link>
+          <Link
+            to="/categories"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">🏷️</span>
+            <span className="nav-text">Kategori</span>
+          </Link>
+          <Link
+            to="/locations"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">📍</span>
+            <span className="nav-text">Lokasi</span>
+          </Link>
+          <Link
+            to="/suppliers"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">🏪</span>
+            <span className="nav-text">Supplier</span>
+          </Link>
+          <Link
+            to="/transaksi-masuk"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">📥</span>
+            <span className="nav-text">Transaksi Masuk</span>
+          </Link>
+          <Link
+            to="/transaksi-keluar"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">📤</span>
+            <span className="nav-text">Transaksi Keluar</span>
+          </Link>
+          <Link
+            to="/stok-opname"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">📋</span>
+            <span className="nav-text">Stok Opname</span>
+          </Link>
+          <Link
+            to="/users"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">👥</span>
+            <span className="nav-text">Pengguna</span>
+          </Link>
+          <Link
+            to="/activity-logs"
+            className="nav-item"
+            onClick={() => setIsOpen(false)}
+          >
+            <span className="nav-icon">📝</span>
+            <span className="nav-text">Log Aktivitas</span>
+          </Link>
+        </div>
+
+        <div className="nav-footer">
+          <button className="logout-btn" onClick={handleLogout}>
+            <span className="nav-icon">🚪</span>
+            <span className="nav-text">Logout</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div 
+          className="nav-overlay"
+          onClick={() => setIsOpen(false)}
+        ></div>
+      )}
 
       {/* Main Content */}
       <div className="dashboard-main">
@@ -188,6 +304,39 @@ const Dashboard = () => {
             {userData && <div className="user-name">{userData.username}</div>}
           </div>
         </header>
+        
+        {/* Notifikasi Stok Rendah */}
+        {showNotification && stokRendah.length > 0 && (
+          <div className="notification-container">
+            <div className="notification-header">
+              <div className="notification-icon">⚠️</div>
+              <h3>Peringatan Stok Rendah!</h3>
+              <button 
+                className="close-notification"
+                onClick={() => setShowNotification(false)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="notification-content">
+              <p>Terdapat {stokRendah.length} barang dengan stok hampir habis:</p>
+              <div className="stok-rendah-list">
+                {stokRendah.slice(0, 5).map((barang) => (
+                  <div key={barang.id_barang} className="stok-rendah-item">
+                    <span className="barang-nama">{barang.nama_barang}</span>
+                    <span className="barang-stok">Stok: {barang.stok} / Min: {barang.stok_minimum}</span>
+                  </div>
+                ))}
+                {stokRendah.length > 5 && (
+                  <div className="more-items">dan {stokRendah.length - 5} barang lainnya...</div>
+                )}
+              </div>
+              <Link to="/barang" className="view-all-btn">
+                Lihat Semua Barang
+              </Link>
+            </div>
+          </div>
+        )}
         
         {/* Loading State */}
         {loading && (
@@ -218,7 +367,7 @@ const Dashboard = () => {
           <div className="dashboard-card">
             <h2 className="card-title">Tinjauan Penjualan</h2>
             <div className="stats-container">
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-keluar')}>
                 <div className="stat-icon blue">
                   <i className="order-icon"></i>
                 </div>
@@ -227,7 +376,7 @@ const Dashboard = () => {
                   <p className="stat-label">Pemesanan</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-keluar')}>
                 <div className="stat-icon purple">
                   <i className="sales-icon"></i>
                 </div>
@@ -236,7 +385,7 @@ const Dashboard = () => {
                   <p className="stat-label">Penjualan</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-keluar')}>
                 <div className="stat-icon orange">
                   <i className="profit-icon"></i>
                 </div>
@@ -245,7 +394,7 @@ const Dashboard = () => {
                   <p className="stat-label">Keuntungan</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-keluar')}>
                 <div className="stat-icon green">
                   <i className="income-icon"></i>
                 </div>
@@ -261,7 +410,7 @@ const Dashboard = () => {
           <div className="dashboard-card">
             <h2 className="card-title">Tinjauan Pembelian</h2>
             <div className="stats-container">
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-masuk')}>
                 <div className="stat-icon blue">
                   <i className="purchase-icon"></i>
                 </div>
@@ -270,7 +419,7 @@ const Dashboard = () => {
                   <p className="stat-label">Pembelian</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-masuk')}>
                 <div className="stat-icon green">
                   <i className="cost-icon"></i>
                 </div>
@@ -279,7 +428,7 @@ const Dashboard = () => {
                   <p className="stat-label">Biaya</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-masuk')}>
                 <div className="stat-icon purple">
                   <i className="items-icon"></i>
                 </div>
@@ -288,7 +437,7 @@ const Dashboard = () => {
                   <p className="stat-label">Barang</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/transaksi-masuk')}>
                 <div className="stat-icon orange">
                   <i className="expense-icon"></i>
                 </div>
@@ -301,50 +450,86 @@ const Dashboard = () => {
           </div>
 
           {/* Ringkasan Inventaris */}
-          <div className="dashboard-card small-card">
+          <div className="dashboard-card">
             <h2 className="card-title">Ringkasan Inventaris</h2>
-            <div className="stats-container two-columns">
-              <div className="stat-item">
+            <div className="stats-container">
+              <div className="stat-item clickable" onClick={() => navigate('/barang')}>
                 <div className="stat-icon orange">
-                  <i className="quantity-icon"></i>
+                  <i className="quantity-icon">📦</i>
                 </div>
                 <div className="stat-info">
                   <h3 className="stat-value">{formatNumber(dashboardData.ringkasan_inventaris.kuantitas_tersedia)}</h3>
                   <p className="stat-label">Kuantitas Tersedia</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/barang')}>
                 <div className="stat-icon purple">
-                  <i className="location-icon"></i>
+                  <i className="location-icon">📍</i>
                 </div>
                 <div className="stat-info">
                   <h3 className="stat-value">{formatNumber(dashboardData.ringkasan_inventaris.lokasi_barang)}</h3>
                   <p className="stat-label">Lokasi Barang</p>
                 </div>
               </div>
+              <div className="stat-item clickable" onClick={() => navigate('/barang')}>
+                <div className="stat-icon green">
+                  <i className="value-icon">💰</i>
+                </div>
+                <div className="stat-info">
+                  <h3 className="stat-value">Rp {formatNumber(dashboardData.ringkasan_inventaris.total_nilai)}</h3>
+                  <p className="stat-label">Total Nilai</p>
+                </div>
+              </div>
+              <div className="stat-item clickable" onClick={() => navigate('/barang')}>
+                <div className="stat-icon red">
+                  <i className="warning-icon">⚠️</i>
+                </div>
+                <div className="stat-info">
+                  <h3 className="stat-value">{formatNumber(dashboardData.ringkasan_inventaris.stok_rendah)}</h3>
+                  <p className="stat-label">Stok Rendah</p>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Ringkasan Produk */}
-          <div className="dashboard-card small-card">
+          <div className="dashboard-card">
             <h2 className="card-title">Ringkasan Produk</h2>
-            <div className="stats-container two-columns">
-              <div className="stat-item">
+            <div className="stats-container">
+              <div className="stat-item clickable" onClick={() => navigate('/barang')}>
                 <div className="stat-icon blue">
-                  <i className="available-icon"></i>
+                  <i className="available-icon">✅</i>
                 </div>
                 <div className="stat-info">
                   <h3 className="stat-value">{formatNumber(dashboardData.ringkasan_produk.jumlah_tersedia)}</h3>
                   <p className="stat-label">Jumlah Tersedia</p>
                 </div>
               </div>
-              <div className="stat-item">
+              <div className="stat-item clickable" onClick={() => navigate('/categories')}>
                 <div className="stat-icon purple">
-                  <i className="category-icon"></i>
+                  <i className="category-icon">🏷️</i>
                 </div>
                 <div className="stat-info">
                   <h3 className="stat-value">{formatNumber(dashboardData.ringkasan_produk.jumlah_kategori)}</h3>
                   <p className="stat-label">Jumlah Kategori</p>
+                </div>
+              </div>
+              <div className="stat-item clickable" onClick={() => navigate('/barang')}>
+                <div className="stat-icon orange">
+                  <i className="total-icon">📋</i>
+                </div>
+                <div className="stat-info">
+                  <h3 className="stat-value">{formatNumber(dashboardData.ringkasan_produk.total_produk)}</h3>
+                  <p className="stat-label">Total Produk</p>
+                </div>
+              </div>
+              <div className="stat-item clickable" onClick={() => navigate('/suppliers')}>
+                <div className="stat-icon green">
+                  <i className="supplier-icon">🏪</i>
+                </div>
+                <div className="stat-info">
+                  <h3 className="stat-value">{formatNumber(dashboardData.ringkasan_produk.jumlah_supplier)}</h3>
+                  <p className="stat-label">Jumlah Supplier</p>
                 </div>
               </div>
             </div>
@@ -478,7 +663,7 @@ const Dashboard = () => {
           </div>
 
           {/* Stok Terlaris */}
-          <div className="dashboard-card table-card">
+          <div className="dashboard-card table-card clickable" onClick={() => navigate('/barang')}>
             <div className="card-header">
               <h2 className="card-title">Stok Terlaris</h2>
               <button className="see-all-btn">See All</button>
@@ -508,7 +693,7 @@ const Dashboard = () => {
           </div>
 
           {/* Stok Menipis */}
-          <div className="dashboard-card table-card">
+          <div className="dashboard-card table-card clickable" onClick={() => navigate('/barang')}>
             <div className="card-header">
               <h2 className="card-title">Stok Menipis</h2>
               <button className="see-all-btn">Lihat Semua</button>
@@ -523,7 +708,15 @@ const Dashboard = () => {
                     <h3 className="stock-alert-name">{item.nama}</h3>
                     <p className="stock-alert-quantity">Jumlah Stok: {item.jumlah_stok} Paket</p>
                   </div>
-                  <button className="restock-btn">Restock</button>
+                  <button 
+                      className="restock-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/barang');
+                      }}
+                    >
+                      Kelola Stok
+                    </button>
                 </div>
               ))}
             </div>
