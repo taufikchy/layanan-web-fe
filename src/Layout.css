@@ -1,0 +1,36 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.main-content {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Desktop Styles */
+@media (min-width: 769px) {
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  
+  .main-content {
+    padding-top: 80px; /* Space for mobile menu button */
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding-top: 75px;
+  }
+}
