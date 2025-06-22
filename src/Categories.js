@@ -63,6 +63,43 @@ const Categories = () => {
     }
   };
 
+  const fetchBarangByCategory = async (categoryName) => {
+    try {
+      setLoadingBarang(true);
+      const response = await fetch(`${API_BASE_URL}/barang`, {
+        method: 'GET',
+        headers: getHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const filteredBarang = (data.data || []).filter(barang => 
+        barang.nama_kategori === categoryName || barang.kategori === categoryName
+      );
+      setBarangList(filteredBarang);
+    } catch (error) {
+      console.error('Error fetching barang:', error);
+      alert('Gagal memuat data barang');
+    } finally {
+      setLoadingBarang(false);
+    }
+  };
+
+  const handleCategoryClick = async (category) => {
+    setSelectedCategory(category);
+    setShowBarangModal(true);
+    await fetchBarangByCategory(category.nama_kategori);
+  };
+
+  const closeBarangModal = () => {
+    setShowBarangModal(false);
+    setSelectedCategory(null);
+    setBarangList([]);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentCategory(prev => ({
@@ -185,21 +222,32 @@ const Categories = () => {
               <div className="category-actions">
                 <button 
                   className="btn-edit" 
-                  onClick={() => handleEdit(category)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(category);
+                  }}
                   title="Edit Kategori"
                 >
                   ✏️
                 </button>
                 <button 
                   className="btn-delete" 
-                  onClick={() => handleDelete(category)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(category);
+                  }}
                   title="Hapus Kategori"
                 >
                   🗑️
                 </button>
               </div>
             </div>
-            <div className="category-content">
+            <div 
+              className="category-content" 
+              onClick={() => handleCategoryClick(category)}
+              style={{ cursor: 'pointer' }}
+              title="Klik untuk melihat barang dalam kategori ini"
+            >
               <p className="category-description">
                 {category.deskripsi || 'Tidak ada deskripsi'}
               </p>
@@ -207,6 +255,9 @@ const Categories = () => {
                 <span className="stat-item">
                   <strong>Total Barang:</strong> {category.total_barang || 0}
                 </span>
+                <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+                  👆 Klik untuk melihat daftar barang
+                </small>
               </div>
             </div>
           </div>
@@ -265,6 +316,66 @@ const Categories = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Daftar Barang */}
+      {showBarangModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '800px', width: '90%' }}>
+            <div className="modal-header">
+              <h2>Barang dalam Kategori: {selectedCategory?.nama_kategori}</h2>
+              <button className="modal-close" onClick={closeBarangModal}>&times;</button>
+            </div>
+            <div className="modal-body" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+              {loadingBarang ? (
+                <div className="loading-spinner">
+                  <div className="spinner"></div>
+                  <p>Memuat data barang...</p>
+                </div>
+              ) : barangList.length > 0 ? (
+                <div className="barang-table-container">
+                  <table className="barang-table" style={{ width: '100%', fontSize: '14px' }}>
+                    <thead>
+                      <tr>
+                        <th>Kode</th>
+                        <th>Nama Barang</th>
+                        <th>Stok</th>
+                        <th>Harga Beli</th>
+                        <th>Harga Jual</th>
+                        <th>Lokasi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {barangList.map((barang) => (
+                        <tr key={barang.id_barang}>
+                          <td>{barang.kode_barang}</td>
+                          <td>{barang.nama_barang}</td>
+                          <td className={barang.stok <= barang.stok_minimum ? 'stok-rendah' : ''}>
+                            {barang.stok} {barang.satuan}
+                          </td>
+                          <td>Rp {Number(barang.harga_beli).toLocaleString()}</td>
+                          <td>Rp {Number(barang.harga_jual).toLocaleString()}</td>
+                          <td>{barang.nama_lokasi || barang.lokasi || '-'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="empty-state" style={{ textAlign: 'center', padding: '40px' }}>
+                  <div className="empty-icon">📦</div>
+                  <h3>Tidak ada barang</h3>
+                  <p>Belum ada barang dalam kategori ini</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer" style={{ textAlign: 'right', padding: '15px', borderTop: '1px solid #eee' }}>
+              <button className="btn-secondary" onClick={closeBarangModal}>
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}
