@@ -65,7 +65,13 @@ const Barang = () => {
       }
 
       const data = await response.json();
-      setBarangList(data.data || []);
+      // Process data to ensure kategori and lokasi fields are properly set
+      const processedData = (data.data || []).map(barang => ({
+        ...barang,
+        kategori: barang.nama_kategori || '',
+        lokasi: barang.nama_lokasi || ''
+      }));
+      setBarangList(processedData);
     } catch (error) {
       console.error('Error fetching barang:', error);
       setError('Gagal memuat data barang');
@@ -270,10 +276,10 @@ const Barang = () => {
               <th>Kode</th>
               <th>Nama Barang</th>
               <th>Kategori</th>
+              <th>Lokasi</th>
               <th>Stok</th>
               <th>Harga Beli</th>
               <th>Harga Jual</th>
-              <th>Lokasi</th>
               <th>Aksi</th>
             </tr>
           </thead>
@@ -283,12 +289,12 @@ const Barang = () => {
                 <td>{barang.kode_barang}</td>
                 <td>{barang.nama_barang}</td>
                 <td>{barang.kategori}</td>
+                <td>{barang.lokasi}</td>
                 <td className={barang.stok <= barang.stok_minimum ? 'stok-rendah' : ''}>
                   {barang.stok} {barang.satuan}
                 </td>
                 <td>Rp {Number(barang.harga_beli).toLocaleString()}</td>
                 <td>Rp {Number(barang.harga_jual).toLocaleString()}</td>
-                <td>{barang.lokasi}</td>
                 <td>
                   <button 
                     className="btn-edit" 

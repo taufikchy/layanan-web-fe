@@ -12,6 +12,10 @@ const Categories = () => {
     nama_kategori: '',
     deskripsi: ''
   });
+  const [showBarangModal, setShowBarangModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [barangList, setBarangList] = useState([]);
+  const [loadingBarang, setLoadingBarang] = useState(false);
   const navigate = useNavigate();
 
   const API_BASE_URL = 'http://localhost:3001/api';
