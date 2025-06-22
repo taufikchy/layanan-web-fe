@@ -10,9 +10,10 @@ const Suppliers = () => {
   const [editingSupplier, setEditingSupplier] = useState(null);
   const [currentSupplier, setCurrentSupplier] = useState({
     nama_supplier: '',
-    kontak: '',
+    telepon: '',
+    email: '',
     alamat: '',
-    email: ''
+    kontak_person: ''
   });
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const Suppliers = () => {
       return;
     }
     fetchSuppliers();
-  }, [navigate]);
+  }, [navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchSuppliers = async () => {
     try {
@@ -72,6 +73,9 @@ const Suppliers = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('Submitting supplier data:', currentSupplier);
+    console.log('Headers:', getHeaders());
+    
     try {
       const url = editingSupplier 
         ? `${API_BASE_URL}/supplier/${editingSupplier.id_supplier}`
@@ -79,11 +83,17 @@ const Suppliers = () => {
       
       const method = editingSupplier ? 'PUT' : 'POST';
       
+      console.log('Request URL:', url);
+      console.log('Request Method:', method);
+      
       const response = await fetch(url, {
         method: method,
         headers: getHeaders(),
         body: JSON.stringify(currentSupplier)
       });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
 
       if (response.ok) {
         setShowModal(false);
@@ -92,11 +102,12 @@ const Suppliers = () => {
         alert(editingSupplier ? 'Supplier berhasil diperbarui!' : 'Supplier berhasil ditambahkan!');
       } else {
         const errorData = await response.json();
+        console.error('Error response:', errorData);
         alert(errorData.message || 'Terjadi kesalahan');
       }
     } catch (error) {
       console.error('Error saving supplier:', error);
-      alert('Terjadi kesalahan saat menyimpan data');
+      alert('Terjadi kesalahan saat menyimpan data: ' + error.message);
     }
   };
 
@@ -104,9 +115,10 @@ const Suppliers = () => {
     setEditingSupplier(supplier);
     setCurrentSupplier({
       nama_supplier: supplier.nama_supplier,
-      kontak: supplier.kontak || '',
+      telepon: supplier.telepon || '',
       alamat: supplier.alamat || '',
-      email: supplier.email || ''
+      email: supplier.email || '',
+      kontak_person: supplier.kontak_person || ''
     });
     setShowModal(true);
   };
@@ -136,9 +148,10 @@ const Suppliers = () => {
   const resetForm = () => {
     setCurrentSupplier({
       nama_supplier: '',
-      kontak: '',
+      telepon: '',
       alamat: '',
-      email: ''
+      email: '',
+      kontak_person: ''
     });
     setEditingSupplier(null);
   };
@@ -204,8 +217,12 @@ const Suppliers = () => {
             <div className="supplier-content">
               <div className="supplier-info">
                 <div className="info-item">
-                  <span className="info-label">📞 Kontak:</span>
-                  <span className="info-value">{supplier.kontak || 'Tidak ada kontak'}</span>
+                  <span className="info-label">📞 Telepon:</span>
+                  <span className="info-value">{supplier.telepon || 'Tidak ada telepon'}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">👤 Kontak Person:</span>
+                  <span className="info-value">{supplier.kontak_person || 'Tidak ada kontak person'}</span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">📧 Email:</span>
@@ -260,11 +277,11 @@ const Suppliers = () => {
               
               <div className="form-row">
                 <div className="form-group">
-                  <label>Kontak</label>
+                  <label>Telepon</label>
                   <input
                     type="text"
-                    name="kontak"
-                    value={currentSupplier.kontak}
+                    name="telepon"
+                    value={currentSupplier.telepon}
                     onChange={handleInputChange}
                     placeholder="Nomor telepon/HP"
                   />
@@ -279,6 +296,17 @@ const Suppliers = () => {
                     placeholder="alamat@email.com"
                   />
                 </div>
+              </div>
+              
+              <div className="form-group">
+                <label>Kontak Person</label>
+                <input
+                  type="text"
+                  name="kontak_person"
+                  value={currentSupplier.kontak_person}
+                  onChange={handleInputChange}
+                  placeholder="Nama kontak person"
+                />
               </div>
               
               <div className="form-group">

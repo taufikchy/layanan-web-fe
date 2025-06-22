@@ -136,10 +136,26 @@ const Barang = () => {
       
       const method = editMode ? 'PUT' : 'POST';
       
+      // Convert kategori and lokasi names to IDs
+      const selectedKategori = kategoriesList.find(k => k.nama_kategori === currentBarang.kategori);
+      const selectedLokasi = lokasiList.find(l => l.nama_lokasi === currentBarang.lokasi);
+      
+      const barangData = {
+        ...currentBarang,
+        id_kategori: selectedKategori ? selectedKategori.id_kategori : null,
+        id_lokasi: selectedLokasi ? selectedLokasi.id_lokasi : null
+      };
+      
+      // Remove the name fields that backend doesn't expect
+       delete barangData.kategori;
+       delete barangData.lokasi;
+       delete barangData.supplier;
+       // Keep stok_minimum as it's now supported by backend
+      
       const response = await fetch(url, {
         method: method,
         headers: getHeaders(),
-        body: JSON.stringify(currentBarang)
+        body: JSON.stringify(barangData)
       });
 
       if (response.ok) {
@@ -158,7 +174,17 @@ const Barang = () => {
   };
 
   const handleEdit = (barang) => {
-    setCurrentBarang(barang);
+    // Convert id_kategori and id_lokasi back to names for display
+    const kategoriName = kategoriesList.find(k => k.id_kategori === barang.id_kategori)?.nama_kategori || '';
+    const lokasiName = lokasiList.find(l => l.id_lokasi === barang.id_lokasi)?.nama_lokasi || '';
+    
+    setCurrentBarang({
+      ...barang,
+      kategori: kategoriName,
+      lokasi: lokasiName,
+      supplier: '', // Reset supplier for now
+      stok_minimum: barang.stok_minimum || ''
+    });
     setEditMode(true);
     setShowModal(true);
   };

@@ -51,7 +51,7 @@
   left: -300px;
   width: 280px;
   height: 100vh;
-  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  background: white;
   z-index: 1000;
   transition: all 0.3s ease;
   display: flex;
@@ -65,14 +65,14 @@
 
 .nav-header {
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .nav-header h2 {
-  color: white;
+  color: #333;
   margin: 0;
   font-size: 20px;
   font-weight: 600;
@@ -81,7 +81,7 @@
 .nav-close {
   background: none;
   border: none;
-  color: white;
+  color: #333;
   font-size: 24px;
   cursor: pointer;
   padding: 4px;
@@ -91,7 +91,7 @@
 }
 
 .nav-close:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .nav-menu {
@@ -104,7 +104,7 @@
   display: flex;
   align-items: center;
   padding: 12px 20px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.7);
   text-decoration: none;
   transition: all 0.3s ease;
   border-left: 3px solid transparent;
@@ -112,15 +112,15 @@
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-left-color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
+  border-left-color: rgba(0, 0, 0, 0.3);
 }
 
 .nav-item.active {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border-left-color: white;
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+  border-left-color: #333;
   font-weight: 500;
 }
 
@@ -138,7 +138,7 @@
 
 .nav-footer {
   padding: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .logout-btn {
@@ -148,15 +148,15 @@
   padding: 12px 0;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.7);
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 6px;
 }
 
 .logout-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
 }
 
 /* Overlay for mobile */

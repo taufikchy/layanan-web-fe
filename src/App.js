@@ -27,7 +27,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/barang" element={<Layout><Barang /></Layout>} />
           <Route path="/transaksi-masuk" element={<Layout><TransaksiMasuk /></Layout>} />
           <Route path="/transaksi-keluar" element={<Layout><TransaksiKeluar /></Layout>} />
