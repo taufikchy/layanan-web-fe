@@ -235,7 +235,7 @@ const Suppliers = () => {
               </div>
               <div className="supplier-stats">
                 <span className="stat-item">
-                  <strong>Total Transaksi:</strong> {supplier.total_transaksi || 0}
+                  <strong>Total Transaksi Masuk:</strong> {supplier.total_transaksi_masuk || 0}
                 </span>
               </div>
             </div>

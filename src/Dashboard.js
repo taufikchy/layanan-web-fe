@@ -159,6 +159,15 @@ const Dashboard = () => {
   };
 
   // Fungsi untuk memformat angka dengan pemisah ribuan
+  const formatRupiah = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
   const formatNumber = (num) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
@@ -390,7 +399,7 @@ const Dashboard = () => {
                   <i className="profit-icon"></i>
                 </div>
                 <div className="stat-info">
-                  <h3 className="stat-value">{formatNumber(dashboardData.tinjauan_penjualan.keuntungan)}</h3>
+                  <h3 className="stat-value">{formatRupiah(dashboardData.tinjauan_penjualan.keuntungan)}</h3>
                   <p className="stat-label">Keuntungan</p>
                 </div>
               </div>
@@ -399,7 +408,7 @@ const Dashboard = () => {
                   <i className="income-icon"></i>
                 </div>
                 <div className="stat-info">
-                  <h3 className="stat-value">{formatNumber(dashboardData.tinjauan_penjualan.pemasukan)}</h3>
+                  <h3 className="stat-value">{formatRupiah(dashboardData.tinjauan_penjualan.pemasukan)}</h3>
                   <p className="stat-label">Pemasukan</p>
                 </div>
               </div>
@@ -424,7 +433,7 @@ const Dashboard = () => {
                   <i className="cost-icon"></i>
                 </div>
                 <div className="stat-info">
-                  <h3 className="stat-value">{formatNumber(dashboardData.tinjauan_pembelian.biaya)}</h3>
+                  <h3 className="stat-value">{formatRupiah(dashboardData.tinjauan_pembelian.biaya)}</h3>
                   <p className="stat-label">Biaya</p>
                 </div>
               </div>
@@ -442,7 +451,7 @@ const Dashboard = () => {
                   <i className="expense-icon"></i>
                 </div>
                 <div className="stat-info">
-                  <h3 className="stat-value">{formatNumber(dashboardData.tinjauan_pembelian.pengeluaran)}</h3>
+                  <h3 className="stat-value">{formatRupiah(dashboardData.tinjauan_pembelian.pengeluaran)}</h3>
                   <p className="stat-label">Pengeluaran</p>
                 </div>
               </div>
@@ -476,7 +485,7 @@ const Dashboard = () => {
                   <i className="value-icon">💰</i>
                 </div>
                 <div className="stat-info">
-                  <h3 className="stat-value">Rp {formatNumber(dashboardData.ringkasan_inventaris.total_nilai)}</h3>
+                  <h3 className="stat-value">{formatRupiah(dashboardData.ringkasan_inventaris.total_nilai)}</h3>
                   <p className="stat-label">Total Nilai</p>
                 </div>
               </div>
@@ -684,7 +693,7 @@ const Dashboard = () => {
                       <td>{item.nama}</td>
                       <td>{item.jumlah_terjual}</td>
                       <td>{item.jumlah_tersedia}</td>
-                      <td>{item.harga}</td>
+                      <td>{formatRupiah(item.harga)}</td>
                     </tr>
                   ))}
                 </tbody>
