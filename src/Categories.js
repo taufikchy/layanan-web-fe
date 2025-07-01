@@ -355,8 +355,8 @@ const Categories = () => {
                           <td className={barang.stok <= barang.stok_minimum ? 'stok-rendah' : ''}>
                             {barang.stok} {barang.satuan}
                           </td>
-                          <td>Rp {Number(barang.harga_beli).toLocaleString()}</td>
-                          <td>Rp {Number(barang.harga_jual).toLocaleString()}</td>
+                          <td>{formatRupiah(barang.harga_beli)}</td>
+                          <td>{formatRupiah(barang.harga_jual)}</td>
                           <td>{barang.nama_lokasi || barang.lokasi || '-'}</td>
                         </tr>
                       ))}

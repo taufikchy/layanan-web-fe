@@ -13,8 +13,8 @@ const Barang = () => {
     nama_barang: '',
     kategori: '',
     satuan: '',
-    harga_beli: '',
-    harga_jual: '',
+    harga_beli: 0,
+    harga_jual: 0,
     stok: '',
     stok_minimum: '',
     lokasi: '',
@@ -127,10 +127,27 @@ const Barang = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setCurrentBarang(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (name === 'harga_beli' || name === 'harga_jual') {
+      const numericValue = value.replace(/[^0-9]/g, '');
+      setCurrentBarang(prev => ({
+        ...prev,
+        [name]: numericValue === '' ? 0 : parseInt(numericValue, 10)
+      }));
+    } else {
+      setCurrentBarang(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const formatRupiah = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
   };
 
   const handleSubmit = async (e) => {
@@ -149,7 +166,9 @@ const Barang = () => {
       const barangData = {
         ...currentBarang,
         id_kategori: selectedKategori ? selectedKategori.id_kategori : null,
-        id_lokasi: selectedLokasi ? selectedLokasi.id_lokasi : null
+        id_lokasi: selectedLokasi ? selectedLokasi.id_lokasi : null,
+        harga_beli: parseInt(currentBarang.harga_beli, 10),
+        harga_jual: parseInt(currentBarang.harga_jual, 10)
       };
       
       // Remove the name fields that backend doesn't expect
@@ -189,7 +208,9 @@ const Barang = () => {
       kategori: kategoriName,
       lokasi: lokasiName,
       supplier: '', // Reset supplier for now
-      stok_minimum: barang.stok_minimum || ''
+      stok_minimum: barang.stok_minimum || '',
+      harga_beli: barang.harga_beli || 0,
+      harga_jual: barang.harga_jual || 0
     });
     setEditMode(true);
     setShowModal(true);
@@ -222,8 +243,8 @@ const Barang = () => {
       nama_barang: '',
       kategori: '',
       satuan: '',
-      harga_beli: '',
-      harga_jual: '',
+      harga_beli: 0,
+      harga_jual: 0,
       stok: '',
       stok_minimum: '',
       lokasi: '',
@@ -293,8 +314,8 @@ const Barang = () => {
                 <td className={barang.stok <= barang.stok_minimum ? 'stok-rendah' : ''}>
                   {barang.stok} {barang.satuan}
                 </td>
-                <td>Rp {Number(barang.harga_beli).toLocaleString()}</td>
-                <td>Rp {Number(barang.harga_jual).toLocaleString()}</td>
+                <td>{formatRupiah(barang.harga_beli)}</td>
+                <td>{formatRupiah(barang.harga_jual)}</td>
                 <td>
                   <button 
                     className="btn-edit" 
@@ -380,9 +401,9 @@ const Barang = () => {
                 <div className="form-group">
                   <label>Harga Beli</label>
                   <input
-                    type="number"
+                    type="text"
                     name="harga_beli"
-                    value={currentBarang.harga_beli}
+                    value={formatRupiah(currentBarang.harga_beli)}
                     onChange={handleInputChange}
                     required
                   />
@@ -390,9 +411,9 @@ const Barang = () => {
                 <div className="form-group">
                   <label>Harga Jual</label>
                   <input
-                    type="number"
+                    type="text"
                     name="harga_jual"
-                    value={currentBarang.harga_jual}
+                    value={formatRupiah(currentBarang.harga_jual)}
                     onChange={handleInputChange}
                     required
                   />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './TransaksiMasuk.css';
 
@@ -26,26 +26,15 @@ const TransaksiMasuk = () => {
     return localStorage.getItem('token');
   };
 
-  const getHeaders = () => {
+  const getHeaders = useCallback(() => {
     const token = getToken();
     return {
       'Content-Type': 'application/json',
       'Authorization': token ? `Bearer ${token}` : ''
     };
-  };
+  }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    fetchTransaksiMasuk();
-    fetchBarang();
-    fetchSupplier();
-  }, [navigate]);
-
-  const fetchTransaksiMasuk = async () => {
+  const fetchTransaksiMasuk = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`${API_BASE_URL}/transaksi-masuk`, {
@@ -65,9 +54,9 @@ const TransaksiMasuk = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getHeaders]);
 
-  const fetchBarang = async () => {
+  const fetchBarang = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/barang`, {
         method: 'GET',
@@ -80,9 +69,9 @@ const TransaksiMasuk = () => {
     } catch (error) {
       console.error('Error fetching barang:', error);
     }
-  };
+  }, [getHeaders]);
 
-  const fetchSupplier = async () => {
+  const fetchSupplier = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/supplier`, {
         method: 'GET',
@@ -91,11 +80,24 @@ const TransaksiMasuk = () => {
       if (response.ok) {
         const data = await response.json();
         setSupplierList(data.data || []);
+      } else {
+        console.error('Failed to fetch suppliers:', response.status);
       }
     } catch (error) {
-      console.error('Error fetching supplier:', error);
+      console.error('Error fetching suppliers:', error);
     }
-  };
+  }, [getHeaders]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    fetchTransaksiMasuk();
+    fetchBarang();
+    fetchSupplier();
+  }, [navigate, fetchTransaksiMasuk, fetchBarang, fetchSupplier]);
 
   const fetchDetailTransaksi = async (id) => {
     try {
@@ -113,6 +115,15 @@ const TransaksiMasuk = () => {
       console.error('Error fetching detail transaksi:', error);
       alert('Gagal memuat detail transaksi');
     }
+  };
+
+  const formatRupiah = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
   };
 
   const handleInputChange = (e) => {
@@ -143,12 +154,22 @@ const TransaksiMasuk = () => {
   };
 
   const updateDetailItem = (index, field, value) => {
-    setCurrentTransaksi(prev => ({
-      ...prev,
-      detail_items: prev.detail_items.map((item, i) => 
-        i === index ? { ...item, [field]: value } : item
-      )
-    }));
+    if (field === 'harga_satuan') {
+      const numericValue = value.replace(/[^0-9]/g, '');
+      setCurrentTransaksi(prev => ({
+        ...prev,
+        detail_items: prev.detail_items.map((item, i) => 
+          i === index ? { ...item, [field]: numericValue === '' ? 0 : parseInt(numericValue, 10) } : item
+        )
+      }));
+    } else {
+      setCurrentTransaksi(prev => ({
+        ...prev,
+        detail_items: prev.detail_items.map((item, i) => 
+          i === index ? { ...item, [field]: value } : item
+        )
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -210,12 +231,7 @@ const TransaksiMasuk = () => {
     return new Date(dateString).toLocaleDateString('id-ID');
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR'
-    }).format(amount);
-  };
+
 
   if (loading) {
     return (
@@ -260,7 +276,7 @@ const TransaksiMasuk = () => {
               <tr key={transaksi.id_transaksi_masuk}>
                 <td>{transaksi.no_referensi}</td>
                 <td>{formatDate(transaksi.tanggal_transaksi)}</td>
-                <td>{transaksi.supplier}</td>
+                <td>{transaksi.nama_supplier}</td>
                 <td>{transaksi.total_barang}</td>
                 <td>
                   <span className={`status ${transaksi.status}`}>
@@ -291,16 +307,7 @@ const TransaksiMasuk = () => {
             </div>
             <form onSubmit={handleSubmit} className="transaksi-form">
               <div className="form-row">
-                <div className="form-group">
-                  <label>No. Referensi</label>
-                  <input
-                    type="text"
-                    name="no_referensi"
-                    value={currentTransaksi.no_referensi}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+
                 <div className="form-group">
                   <label>Tanggal Transaksi</label>
                   <input
@@ -379,8 +386,9 @@ const TransaksiMasuk = () => {
                       <div className="form-group">
                         <label>Harga Satuan</label>
                         <input
-                          type="number"
-                          value={item.harga_satuan}
+                          type="text"
+                          name="harga_satuan"
+                          value={formatRupiah(item.harga_satuan)}
                           onChange={(e) => updateDetailItem(index, 'harga_satuan', e.target.value)}
                           required
                         />
@@ -466,8 +474,8 @@ const TransaksiMasuk = () => {
                     <tr key={index}>
                       <td>{item.nama_barang}</td>
                       <td>{item.jumlah} {item.satuan}</td>
-                      <td>{formatCurrency(item.harga_satuan)}</td>
-                      <td>{formatCurrency(item.subtotal)}</td>
+                      <td>{formatRupiah(item.harga_satuan)}</td>
+                      <td>{formatRupiah(item.subtotal)}</td>
                     </tr>
                   ))}
                 </tbody>
