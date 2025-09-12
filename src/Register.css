@@ -1,0 +1,419 @@
+/* Register.css */
+/* Menggunakan gaya dasar yang sama dengan Login.css dengan beberapa penyesuaian */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+/* Animasi Fade In */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Animasi Slide In Down */
+@keyframes slideInDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Animasi Input Focus */
+@keyframes inputFocus {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.1); }
+  70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+/* Animasi Button Loading */
+@keyframes buttonLoading {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Animasi Pulse */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.slide-in-down {
+  opacity: 0;
+  animation: slideInDown 0.5s ease-out forwards;
+}
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  background-image: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0.5rem;
+  opacity: 0;
+}
+
+.register-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.register-card:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+}
+
+.top-logo {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
+}
+
+.small-logo {
+  width: 32px;
+  height: 32px;
+  transition: transform 0.3s ease;
+}
+
+.small-logo:hover {
+  transform: scale(1.1);
+}
+
+.register-content {
+  padding: 1.8rem;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo-placeholder {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.main-logo {
+  max-width: 180px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.main-logo:hover {
+  transform: scale(1.05);
+}
+
+.register-header h2 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.register-form {
+  margin-top: 1rem;
+}
+
+.input-group {
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #475569;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.input-animated {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #1e293b;
+  transition: all 0.3s ease;
+  background-color: #f8fafc;
+}
+
+.input-animated:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  animation: inputFocus 1s ease-in-out;
+}
+
+.input-animated:hover {
+  border-color: #cbd5e1;
+}
+
+.input-animated::placeholder {
+  color: #94a3b8;
+  transition: opacity 0.2s ease;
+}
+
+.input-animated:focus::placeholder {
+  opacity: 0.7;
+}
+
+.input-error {
+  border-color: #e53e3e;
+}
+
+.input-error:focus {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.1);
+}
+
+.password-mismatch {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  animation: slideInDown 0.3s ease-out forwards;
+}
+
+.password-input-container {
+  position: relative;
+}
+
+.register-button {
+  width: 100%;
+  padding: 0.85rem;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.register-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25);
+}
+
+.register-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+}
+
+.register-button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.button-loading .button-text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.button-loading .button-loader {
+  visibility: visible;
+  opacity: 1;
+}
+
+.button-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -10px;
+  margin-left: -10px;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: buttonLoading 1s infinite linear;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s linear;
+}
+
+.login-link {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.login-link a {
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.login-link a:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #2563eb;
+  transition: width 0.3s ease;
+}
+
+.login-link a:hover:after {
+  width: 100%;
+}
+
+/* Responsif untuk berbagai ukuran layar */
+@media (max-width: 480px) {
+  .register-content {
+    padding: 2rem 1.5rem;
+  }
+  
+  .register-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .main-logo {
+    max-width: 180px;
+  }
+  
+  .input-animated {
+    padding: 0.85rem 0.9rem;
+  }
+  
+  .register-button {
+    padding: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .register-content {
+    padding: 1.75rem 1.25rem;
+  }
+  
+  .main-logo {
+    max-width: 160px;
+  }
+  
+  .register-header h2 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .register-card {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+  
+  .register-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+  }
+}
+
+/* Dukungan untuk mode gelap */
+@media (prefers-color-scheme: dark) {
+  .register-container {
+    background-image: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  }
+  
+  .register-card {
+    background: #1e293b;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .register-header h2 {
+    color: #f1f5f9;
+  }
+  
+  .subtitle {
+    color: #cbd5e1;
+  }
+  
+  .input-group label {
+    color: #e2e8f0;
+  }
+  
+  .input-animated {
+    background-color: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+  }
+  
+  .input-animated:focus {
+    background-color: #334155;
+    border-color: #3b82f6;
+  }
+  
+  .input-animated::placeholder {
+    color: #94a3b8;
+  }
+  
+  .input-error {
+    border-color: #f87171;
+  }
+  
+  .input-error:focus {
+    border-color: #f87171;
+    box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.1);
+  }
+  
+  .password-mismatch {
+    color: #f87171;
+  }
+  
+  .login-link {
+    color: #cbd5e1;
+  }
+}
+
+.success-message {
+  background-color: rgba(56, 161, 105, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  border-left: 4px solid #38a169;
+  animation: slideInDown 0.5s ease-out forwards;
+}
